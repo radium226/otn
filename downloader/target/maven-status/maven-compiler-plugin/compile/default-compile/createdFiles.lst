@@ -1,0 +1,8 @@
+com/github/radium/oracle/tn/Resource.class
+com/github/radium/oracle/tn/ResourceDownloader.class
+com/github/radium/oracle/tn/ResourceDownloader$1.class
+com/github/radium/htmlunit/HtmlUnit$1.class
+com/github/radium/oracle/tn/ResourceDownloader$DownloadResourceCallback$1.class
+com/github/radium/oracle/tn/ResourceDownloader$DownloadResourceCallback.class
+com/github/radium/htmlunit/HtmlUnit$2.class
+com/github/radium/htmlunit/HtmlUnit.class
