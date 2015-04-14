@@ -47,7 +47,7 @@ public class ResourceWagon extends AbstractWagon {
     }
 
     private Resource findResourceByCoordinates(final Coordinates coordinates) {
-        return Iterables.get(Iterables.filter(Arrays.asList(Resource.values()), new Predicate<Resource>() {
+        return Iterables.getFirst(Iterables.filter(Arrays.asList(Resource.values()), new Predicate<Resource>() {
 
             @Override
             public boolean apply(Resource resource) {
@@ -55,7 +55,7 @@ public class ResourceWagon extends AbstractWagon {
                 return coordinates.equals(Coordinates.fromText(resource.getCoordinates()));
             }
 
-        }), 0);
+        }), null);
     }
 
     public void getJAR(Coordinates coordinates, File localResourceFile) throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
