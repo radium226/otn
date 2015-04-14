@@ -84,10 +84,11 @@ public class ResourceWagon extends AbstractWagon {
 
     public void getPOM(Coordinates coordinates, File localResourceFile) throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
         if(findResourceByCoordinates(coordinates) == null) {
-            throw new ResourceDoesNotExistException("Sorry !");
+            throw new ResourceDoesNotExistException("Sorry for " + coordinates);
         }
         
         String pom = getPOM(coordinates);
+        System.out.println("pom = " + pom);
         try {
             Files.write(pom, localResourceFile, Charsets.UTF_8);
         } catch (IOException e) {
