@@ -127,7 +127,7 @@ public class ResourceWagon extends AbstractWagon {
         if (resourceName.endsWith(".jar")) {
             getJAR(coordinates, localResourceFile);
         } else if (resourceName.endsWith(".pom")) {
-            getPOM(coordinates, localResourceFile);
+            getPOM(coordinates.withPackaging("jar"), localResourceFile);
         } else if (resourceName.endsWith(".pom.sha1")) {
             throw new ResourceDoesNotExistException("Sorry !");
             //getPOMHash(coordinates, localResourceFile, Hashing.sha1());
