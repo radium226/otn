@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>localhost</groupId>
+    <artifactId>dummy</artifactId>
+    <version>1.0</version>
+    <packaging>jar</packaging>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+    </properties>
+    <repositories>
+        <repository>
+            <id>otn</id>
+            <url>otn://www.oracle.com/technetwork/database/features/jdbc/default-2280470.html</url>
+        </repository>
+    </repositories>
+    <dependencies>
+        <dependency>
+            <artifactId>ojdbc6</artifactId>
+            <groupId>com.oracle</groupId>
+            <version>12.1.0.2</version>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <extensions>
+            <extension>
+                <groupId>com.github.radium.oracle</groupId>
+                <artifactId>maven-otn-wagon</artifactId>
+                <version>0.1-SNAPSHOT</version>
+            </extension>
+        </extensions>
+    </build>
+</project>

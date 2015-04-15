@@ -85,7 +85,6 @@ public class Coordinates {
         int partCount = parts.size();
         
         Coordinates coordinates = null; 
-        System.out.println("partCount = " + partCount);
         switch(partCount) {
         case 3:
             coordinates = new Coordinates(parts.get(0), parts.get(1), "jar", null, parts.get(2));
@@ -93,7 +92,6 @@ public class Coordinates {
         default:
             throw new UnsupportedOperationException("Sorry :(");   
         }
-        System.out.println("coordinates =============>" + coordinates);
         return coordinates;
     }
     
@@ -102,8 +100,6 @@ public class Coordinates {
 
         String fileName = resourceName.substring(resourceName.lastIndexOf(SEPARATOR) + 1); //, filePath.lastIndexOf("."));
         String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf("."));
-        
-        System.out.println("fileNameWithoutExtension = " + fileNameWithoutExtension);
         
         String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1);
         String directoryPath = resourceName.substring(0, resourceName.length() - fileName.length() - 1);

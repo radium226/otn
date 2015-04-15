@@ -9,14 +9,7 @@ import java.util.Arrays;
 import com.github.radium.maven.Coordinates;
 import com.google.common.base.Charsets;
 import com.google.common.hash.HashFunction;
-import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import org.apache.maven.wagon.AbstractWagon;
 import org.apache.maven.wagon.ConnectionException;
 import org.apache.maven.wagon.ResourceDoesNotExistException;
@@ -25,12 +18,14 @@ import org.apache.maven.wagon.Wagon;
 import org.apache.maven.wagon.authentication.AuthenticationException;
 import org.apache.maven.wagon.authorization.AuthorizationException;
 import org.codehaus.plexus.component.annotations.Component;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component(role = Wagon.class, hint = "otn")
 public class ResourceWagon extends AbstractWagon {
 
+    final private static Logger LOGGER = LoggerFactory.getLogger(ResourceWagon.class);
+    
     public ResourceWagon() {
         super();
 
@@ -38,12 +33,12 @@ public class ResourceWagon extends AbstractWagon {
 
     @Override
     protected void openConnectionInternal() throws ConnectionException, AuthenticationException {
-        System.out.println(this.getRepository());
+        
     }
 
     @Override
     protected void closeConnection() throws ConnectionException {
-        System.out.println("closeConnection");
+        
     }
 
     private Resource findResourceByCoordinates(final Coordinates coordinates) {
@@ -51,7 +46,6 @@ public class ResourceWagon extends AbstractWagon {
 
             @Override
             public boolean apply(Resource resource) {
-                System.out.println(resource);
                 return coordinates.equals(Coordinates.fromText(resource.getCoordinates()));
             }
 
@@ -60,22 +54,37 @@ public class ResourceWagon extends AbstractWagon {
 
     public void getJAR(Coordinates coordinates, File localResourceFile) throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
         Resource resource = findResourceByCoordinates(coordinates);
-        System.out.println(" ===> " + resource);
         if (resource == null) {
             throw new ResourceDoesNotExistException("The resource does not exists");
         }
 
         try {
             String url = "http" + getRepository().getUrl().substring("otn".length());
-            System.out.println(" ----> url = " + url);
-            
             String userName = getAuthenticationInfo().getUserName();
             String password = getAuthenticationInfo().getPassword();
-
-            System.out.println("user = " + userName);
-            System.out.println("password = " + password);
             HtmlUnit.disableLogging();
-            ResourceDownloader.signIn(userName, password).browse(url).downloadResource(resource, localResourceFile);
+            ResourceDownloader.signIn(userName, password).browse(url).downloadResource(resource, localResourceFile, new ResourceDownloader.DownloadResourceCallback() {
+
+                @Override
+                public void browsingEntryPoint(String entryPointURL) {
+                    LOGGER.info("Browsing " + entryPointURL);
+                }
+
+                @Override
+                public void signingIn(String user, String password) {
+                    LOGGER.info("Signing in with " + user);
+                }
+
+                @Override
+                public void acceptingAgreement() {
+                    LOGGER.info("Accepting agrement ");
+                }
+
+                @Override
+                public void downloadingResource(String fileName) {
+                    LOGGER.info("Downloading resource " + fileName);
+                }
+            });
         } catch (IOException e) {
             e.printStackTrace(System.err);
             throw new TransferFailedException("The transfert failed", e);
@@ -88,7 +97,6 @@ public class ResourceWagon extends AbstractWagon {
         }
         
         String pom = getPOM(coordinates);
-        System.out.println("pom = " + pom);
         try {
             Files.write(pom, localResourceFile, Charsets.UTF_8);
         } catch (IOException e) {
@@ -111,7 +119,6 @@ public class ResourceWagon extends AbstractWagon {
     public void getPOMHash(Coordinates coordinates, File localResourceFile, HashFunction hashFunction) throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
         String pom = getPOM(coordinates);
         String hash = hashFunction.hashString(pom, Charsets.UTF_8).toString();
-        System.out.println(hashFunction + " = " + hash);
         try {
             Files.write(hash, localResourceFile, Charsets.UTF_8);
         } catch (IOException e) {
@@ -121,7 +128,6 @@ public class ResourceWagon extends AbstractWagon {
     
     @Override
     public void get(String resourceName, File localResourceFile) throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
-        System.out.println(" ---------> resourceName=" + resourceName);
         Coordinates coordinates = Coordinates.of(resourceName);
 
         if (resourceName.endsWith(".jar")) {
@@ -143,13 +149,11 @@ public class ResourceWagon extends AbstractWagon {
 
     @Override
     public boolean getIfNewer(String string, File file, long l) throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
-        System.out.println("getIfNewer");
         return false;
     }
 
     @Override
     public void put(File file, String string) throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
-        System.out.println("put");
         throw new ResourceDoesNotExistException("Sorry :(");
     }
 
