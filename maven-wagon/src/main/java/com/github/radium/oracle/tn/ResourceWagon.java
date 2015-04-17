@@ -33,12 +33,12 @@ public class ResourceWagon extends AbstractWagon {
 
     @Override
     protected void openConnectionInternal() throws ConnectionException, AuthenticationException {
-        
+        System.out.println(" ====> openConnectionInternal()");
     }
 
     @Override
     protected void closeConnection() throws ConnectionException {
-        
+        System.out.println(" ====> closeConnection()");
     }
 
     private Resource findResourceByCoordinates(final Coordinates coordinates) {
